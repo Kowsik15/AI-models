@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Resume Analyzer</title>
+
+    <link rel="icon"
+          href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="logo">
+
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+    </div>
+
+    <h1>AI Resume Analyzer</h1>
+
+    <div class="card">
+
+        <h2>Match Score</h2>
+
+        <div class="progress">
+
+            <div class="progress-bar"
+                 style="width: {{ result.score }}%;">
+
+                {{ result.score }}%
+
+            </div>
+
+        </div>
+
+        <br>
+
+        <h3>
+
+            Recommendation:
+
+            <span class="recommend">
+
+                {{ result.recommendation }}
+
+            </span>
+
+        </h3>
+
+    </div>
+
+    <div class="skills-container">
+
+        <div class="card">
+
+            <h2>Matched Skills</h2>
+
+            {% for skill in result.matched_skills %}
+
+                <span class="skill-good">
+
+                    {{ skill }}
+
+                </span>
+
+            {% endfor %}
+
+        </div>
+
+        <div class="card">
+
+            <h2>Missing Skills</h2>
+
+            {% for skill in result.missing_skills %}
+
+                <span class="skill-bad">
+
+                    {{ skill }}
+
+                </span>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
