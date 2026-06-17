@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RAG PDF Assistant</title>
+
+    <!-- Tab Icon -->
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/4712/4712109.png">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>🤖 RAG PDF Assistant</h1>
+        <p>Upload a PDF and chat with your document</p>
+    </div>
+
+    <div class="upload-section">
+
+        <input type="file" id="pdfFile">
+
+        <button onclick="uploadPDF()">
+            Upload PDF
+        </button>
+
+        <p id="uploadStatus"></p>
+
+    </div>
+
+    <div class="chat-box" id="chatBox"></div>
+
+    <div class="input-area">
+
+        <input
+            type="text"
+            id="question"
+            placeholder="Message RAG Assistant..."
+        >
+
+        <button onclick="askQuestion()">
+            ➤
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+async function uploadPDF() {
+
+    let fileInput = document.getElementById("pdfFile");
+
+    let formData = new FormData();
+
+    formData.append(
+        "pdf",
+        fileInput.files[0]
+    );
+
+    let response = await fetch(
+        "/upload",
+        {
+            method:"POST",
+            body:formData
+        }
+    );
+
+    let result = await response.json();
+
+    document.getElementById(
+        "uploadStatus"
+    ).innerText = result.message;
+}
+
+async function askQuestion() {
+
+    let question =
+        document.getElementById("question").value;
+
+    if(question.trim() === "")
+        return;
+
+    let chatBox =
+        document.getElementById("chatBox");
+
+    chatBox.innerHTML += `
+        <div class="user-message">
+            ${question}
+        </div>
+    `;
+
+    let response = await fetch(
+        "/chat",
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                question:question
+            })
+        }
+    );
+
+    let result = await response.json();
+
+    chatBox.innerHTML += `
+        <div class="bot-message">
+            ${result.answer}
+        </div>
+    `;
+
+    document.getElementById("question").value = "";
+
+    chatBox.scrollTop =
+        chatBox.scrollHeight;
+}
+
+</script>
+
+</body>
+</html>
